@@ -1,0 +1,82 @@
+p {
+  font-size: 0.85rem;
+}
+
+
+.border-end-eee {
+  border-right: 1px solid #eee;
+}
+
+.border-bottom-eee {
+  border-bottom: 1px solid #eee;
+}
+
+// Components Sytles
+.history-list {
+  background-color: #f5f8fb;
+
+  .custom-column-size {
+    width: 140px;
+  }
+}
+
+.payroll-detail {
+  background-color: #f5f8fb;
+
+  .card-title {
+    color: #66799e;
+  }
+}
+
+.thead {
+  background-color: #f5f8fb;
+
+  .cost {
+    width: 125px;
+  }
+
+  .dropdown-column {
+    width: 20px;
+  }
+
+  .card-title {
+    color: #66799e;
+  }
+}
+
+.tbody {
+  cursor: pointer;
+  padding-top: .75rem;
+  padding-bottom: .75rem;
+
+  .cost {
+    width: 125px;
+  }
+
+  .dropdown-column {
+    width: 20px;
+  }
+
+  .user-avatar {
+    height: 1.75rem;
+    width: 1.75rem;
+    min-height: 1.75rem;
+    min-width: 1.75rem;
+  }
+}
+
+.tbody-more-detail {
+  border-top: 1px solid #eee;
+
+  .detail-area {
+    width: calc(5 * 125px + 20px - 1rem);
+  }
+
+  .text-light-gray {
+    color: #aaa;
+  }
+}
+
+.twrapper:not(:first-child) {
+  border-top: 1px solid #ddd;
+}
