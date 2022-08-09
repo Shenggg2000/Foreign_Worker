@@ -2,6 +2,9 @@ p {
   font-size: 0.85rem;
 }
 
+.cursor-pointer{
+  cursor: pointer;
+}
 
 .border-end-eee {
   border-right: 1px solid #eee;
@@ -32,11 +35,16 @@ p {
   background-color: #f5f8fb;
 
   .cost {
-    width: 125px;
+    width: 135px;
   }
 
   .dropdown-column {
     width: 20px;
+  }
+
+  .opt-column {
+    width: 30px;
+    margin-right: 10px;
   }
 
   .card-title {
@@ -45,16 +53,20 @@ p {
 }
 
 .tbody {
-  cursor: pointer;
   padding-top: .75rem;
   padding-bottom: .75rem;
 
   .cost {
-    width: 125px;
+    width: 135px;
   }
 
   .dropdown-column {
     width: 20px;
+  }
+
+  .opt-column {
+    width: 30px;
+    margin-right: 10px;
   }
 
   .user-avatar {
@@ -69,14 +81,26 @@ p {
   border-top: 1px solid #eee;
 
   .detail-area {
-    width: calc(5 * 125px + 20px - 1rem);
+    width: calc(5 * 135px + 20px - 1rem);
   }
 
   .text-light-gray {
     color: #aaa;
   }
+
+  .payslip{
+    margin-left: calc(1.5rem + 40px);
+  }
 }
 
 .twrapper:not(:first-child) {
+  border-top: 1px solid #ddd;
+}
+
+.twrapper.opt-out{
+  opacity: .5; 
+}
+
+.payroll-summary{
   border-top: 1px solid #ddd;
 }

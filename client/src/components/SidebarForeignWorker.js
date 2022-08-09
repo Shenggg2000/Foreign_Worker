@@ -47,7 +47,7 @@ export default (props = {}) => {
   const NavItem = (props) => {
     const { title, link, external, target, icon, image, badgeText, badgeBg = "secondary", badgeColor = "primary" } = props;
     const classNames = badgeText ? "d-flex justify-content-start align-items-center justify-content-between" : "";
-    const navItemClassName = link === pathname ? "active" : "";
+    const navItemClassName = link === pathname || (pathname.includes(link) && link === "/foreign-worker/payroll/history") ? "active" : "";
     const linkProps = external ? { href: link } : { as: Link, to: link };
 
     return (

@@ -6,11 +6,15 @@ import PayrollRun1 from './PayrollRun1';
 import PayrollRun2 from './PayrollRun2';
 import "./styles.scss";
 
-export default () => {
+export default (props) => {
   const [isStage1, setIsStage1] = useState(true);
 
   function changeStage() {
     setIsStage1(prevIsStage1 => !prevIsStage1)
+  }
+
+  const onSubmit = () => {
+    props.history.push("/foreign-worker/payroll/history/view/1");
   }
 
   return (
@@ -30,14 +34,19 @@ export default () => {
                     :
                     <>
                       <Button onClick={changeStage} variant="lighten" className="me-3">Back</Button>
-                      <Button variant="secondary" className="">Run Payroll</Button>
+                      <Button onClick={onSubmit} variant="secondary" className="">Run Payroll</Button>
                     </>
                 }
               </div>
             </div>
-            <div className='w-100 d-flex'>
+            <div className='w-100'>
               <PayrollProvider>
-                <PayrollRun1></PayrollRun1>
+                {
+                  isStage1 ?
+                    <PayrollRun1></PayrollRun1>
+                    :
+                    <PayrollRun2></PayrollRun2>
+                }
               </PayrollProvider>
             </div>
           </Card.Body>

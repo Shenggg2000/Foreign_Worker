@@ -3,7 +3,7 @@ import React, { useState, useEffect } from 'react';
 import { Row, Col, Card } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
-import EmployeeList from './components/EmployeeList';
+import HistoryEmployeeList from './components/HistoryEmployeeList';
 import "./styles.scss";
 
 export default () => {
@@ -221,7 +221,7 @@ export default () => {
                   {
                     employeeList.map((emp) => {
                       return (
-                        <EmployeeList key={emp.empName} emp={emp} />
+                        <HistoryEmployeeList key={emp.empName} emp={emp} />
                       )
                     })
                   }
