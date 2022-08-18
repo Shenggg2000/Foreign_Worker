@@ -1,15 +1,11 @@
 
 import React, { useState, useEffect } from 'react';
 import { Row, Col, Card, Container } from '@themesberg/react-bootstrap';
+import useToken from '../useToken';
 
 export default () => {
+  const { token } = useToken();
   const [data, setData] = useState(null);
-
-  useEffect(() => {
-    fetch("/api")
-      .then((res) => res.json())
-      .then((data) => setData(data.message));
-  }, []);
 
   return (
     <Container className="px-0">
@@ -18,7 +14,7 @@ export default () => {
           <Card>
             <Card.Body>
               <article>
-                <h1 className="h2">Dashboard {data}</h1>
+                <h1 className="h2">Dashboard {token}</h1>
               </article>
             </Card.Body>
           </Card>

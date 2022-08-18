@@ -1,19 +1,21 @@
 
 import React from 'react';
-import { Row, Col, Card, Container } from '@themesberg/react-bootstrap';
+import { Row, Col, Card } from '@themesberg/react-bootstrap';
 
-export default () => (
-  <Container className="px-0">
+export default (props) => {
+  return (
     <Row>
       <Col xs={12} className="p-3">
         <Card>
           <Card.Body>
-            <article>
-              <h1 className="h2">Reminder</h1>
-            </article>
+            <div className='d-flex justify-content-between mb-3'>
+              <h1 className="fs-4 fw-bold">Reminder</h1>
+            </div>
+            <div className='w-100'>
+            </div>
           </Card.Body>
         </Card>
       </Col>
     </Row>
-  </Container>
-);
+  );
+}

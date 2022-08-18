@@ -60,9 +60,14 @@ import FWPayrollHistory from "./foreign-workers/payroll/PayrollHistory";
 import FWPayrollHistoryDetail from "./foreign-workers/payroll/PayrollHistoryDetail";
 import FWReminder from "./foreign-workers/reminder/Reminder";
 import FWSetting from "./foreign-workers/settings/Settings";
+import FWLogin from "./foreign-workers/Login";
+import FWRegister from "./foreign-workers/Register";
+import FW404 from "./foreign-workers/404";
+import useToken from './foreign-workers/useToken';
 
 const RouteWithLoader = ({ component: Component, ...rest }) => {
   const [loaded, setLoaded] = useState(false);
+  const { token } = useToken();
 
   useEffect(() => {
     const timer = setTimeout(() => setLoaded(true), 1000);
@@ -70,12 +75,26 @@ const RouteWithLoader = ({ component: Component, ...rest }) => {
   }, []);
 
   return (
-    <Route {...rest} render={props => (<> <Preloader show={loaded ? false : true} /> <Component {...props} /> </>)} />
+    <Route {...rest} render={props => {
+      if (token) {
+        props.history.push("/");
+        return (
+          <></>
+        );
+      } else {
+        return (
+          <>
+            <Preloader show={loaded ? false : true} />
+            <Component {...props} />
+          </>
+        )
+      }
+    }} />
   );
 };
 
 const RouteWithSidebar = ({ component: Component, ...rest }) => {
-
+  const { token } = useToken();
   const [loaded, setLoaded] = useState(false);
 
   useEffect(() => {
@@ -94,20 +113,30 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
     localStorage.setItem('settingsVisible', !showSettings);
   }
 
-  if (rest.path.includes("foreign-worker")) {
+  if (!rest.path.includes("library")) {
     return (
-      <Route {...rest} render={props => (
-        <>
-          <Preloader show={loaded ? false : true} />
-          <SidebarForeignWorker />
+      <Route {...rest} render={props => {
+        console.log(token);
+        if (!token) {
+          props.history.push("/login");
+          return (
+            <></>
+          );
+        } else {
+          return (
+            <>
+              <Preloader show={loaded ? false : true} />
+              <SidebarForeignWorker />
 
-          <main className="content">
-            <NavbarForeignWorker />
-            <Component {...props} />
-            <FooterForeignWorker toggleSettings={toggleSettings} showSettings={showSettings} />
-          </main>
-        </>
-      )}
+              <main className="content">
+                <NavbarForeignWorker />
+                <Component {...props} />
+                <FooterForeignWorker toggleSettings={toggleSettings} showSettings={showSettings} />
+              </main>
+            </>
+          )
+        }
+      }}
       />
     );
   } else {
@@ -183,7 +212,10 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ForeignWorkerReminder.path} component={FWReminder} />
     <RouteWithSidebar exact path={Routes.ForeignWorkerLinks.path} component={FWLinks} />
     <RouteWithSidebar exact path={Routes.ForeignWorkerSetting.path} component={FWSetting} />
+    <RouteWithLoader exact path={Routes.ForeignWorkerLogin.path} component={FWLogin} />
+    <RouteWithLoader exact path={Routes.ForeignWorkerRegister.path} component={FWRegister} />
+    <RouteWithLoader exact path={Routes.ForeignWorkerNotFound.path} component={FW404} />
 
-    <Redirect to={Routes.NotFound.path} />
+    <Redirect to={Routes.ForeignWorkerNotFound.path} />
   </Switch>
 );

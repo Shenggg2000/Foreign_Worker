@@ -23,6 +23,65 @@ export function PayrollProvider({ children }) {
     totalEmployerCost: 0
   });
 
+  useEffect(() => {
+    let apiReturn = [
+      {
+        empId: 1,
+        empName: "Ali",
+        empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
+        basicSalary: 3000,
+        basicSalaryBasedOnUnit: 3000,
+        salaryFrequency: "monthly",
+        dayWorked: 20,
+        hourWorked: 160,
+        compensation: {
+          totalAmount: 0,
+          items: []
+        },
+        deduction: {
+          totalAmount: 0,
+          items: []
+        },
+        contributionOption: {
+          pcbNeeded: false,
+          eisNeeded: true,
+          epfNeeded: true,
+          employeeRate: 0.11,
+          employerRate: 0.13,
+          isSocsoCategory1: false,
+        },
+      },
+      {
+        empId: 2,
+        empName: "Abi",
+        empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
+        basicSalary: 0,
+        basicSalaryBasedOnUnit: 100,
+        salaryFrequency: "daily",
+        dayWorked: 20,
+        hourWorked: 160,
+        compensation: {
+          totalAmount: 0,
+          items: []
+        },
+        deduction: {
+          totalAmount: 0,
+          items: []
+        },
+        contributionOption: {
+          pcbNeeded: false,
+          eisNeeded: true,
+          epfNeeded: true,
+          employeeRate: 0.11,
+          employerRate: 0.13,
+          isSocsoCategory1: false,
+        },
+      },
+    ];
+    let calculatedPayroll = calculatePayroll(apiReturn);
+    setPayroll(calculatedPayroll);
+  }, []);
+
   function updatePayroll(updateInfo) {
     if (updateInfo.action === "check-update") {
       let employees = JSON.parse(JSON.stringify(payroll.employees));
@@ -87,62 +146,31 @@ export function PayrollProvider({ children }) {
       }
       let calculatedPayroll = calculatePayroll(employees);
       setPayroll(calculatedPayroll);
+    } else if (updateInfo.action === "update-salary-frequent") {
+      let employees = JSON.parse(JSON.stringify(payroll.employees));
+      for (let emp of employees) {
+        if (emp.empId == updateInfo.empId) {
+          if (emp.salaryFrequency === "daily") {
+            emp.dayWorked = updateInfo.value.workUnit;
+          } else if (emp.salaryFrequency === "hourly") {
+            emp.hourWorked = updateInfo.value.workUnit;
+          }
+        }
+      }
+      let calculatedPayroll = calculatePayroll(employees);
+      setPayroll(calculatedPayroll);
     }
   }
 
-  useEffect(() => {
-    let apiReturn = [
-      {
-        empId: 1,
-        empName: "Ali",
-        empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
-        basicSalary: 3000,
-        compensation: {
-          totalAmount: 0,
-          items: []
-        },
-        deduction: {
-          totalAmount: 0,
-          items: []
-        },
-        contributionOption: {
-          pcbNeeded: false,
-          eisNeeded: true,
-          epfNeeded: true,
-          employeeRate: 0.11,
-          employerRate: 0.13,
-          isSocsoCategory1: false,
-        },
-      },
-      {
-        empId: 2,
-        empName: "Abi",
-        empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
-        basicSalary: 3000,
-        compensation: {
-          totalAmount: 0,
-          items: []
-        },
-        deduction: {
-          totalAmount: 0,
-          items: []
-        },
-        contributionOption: {
-          pcbNeeded: false,
-          eisNeeded: true,
-          epfNeeded: true,
-          employeeRate: 0.11,
-          employerRate: 0.13,
-          isSocsoCategory1: false,
-        },
-      },
-    ];
-    let calculatedPayroll = calculatePayroll(apiReturn);
-    setPayroll(calculatedPayroll);
-  }, []);
-
   function calculatePayroll(emps) {
     let employees = emps.map((emp) => {
+      if (emp.salaryFrequency === "monthly") {
+        emp.basicSalary = emp.basicSalaryBasedOnUnit;
+      } else if (emp.salaryFrequency === "daily") {
+        emp.basicSalary = emp.basicSalaryBasedOnUnit * emp.dayWorked;
+      } else if (emp.salaryFrequency === "hourly") {
+        emp.basicSalary = emp.basicSalaryBasedOnUnit * emp.hourWorked;
+      }
       // grossSalary
       let grossSalary = emp.basicSalary + emp.compensation.totalAmount - emp.deduction.totalAmount;
       // all contribution
@@ -211,19 +239,19 @@ export function PayrollProvider({ children }) {
       return emp.optIn ? total + emp.employerCost.totalAmount : total;
     }, 0);
     let totalEpf = employees.reduce((total, emp) => {
-      if(emp.optIn){
+      if (emp.optIn) {
         total = total + emp.contribution.items[0].amount + emp.employerCost.items[0].amount;
       }
       return total;
     }, 0);
     let totalSocso = employees.reduce((total, emp) => {
-      if(emp.optIn){
+      if (emp.optIn) {
         total = total + emp.contribution.items[1].amount + emp.employerCost.items[1].amount;
       }
       return total;
     }, 0);
     let totalEis = employees.reduce((total, emp) => {
-      if(emp.optIn){
+      if (emp.optIn) {
         total = total + emp.contribution.items[2].amount + emp.employerCost.items[2].amount;
       }
       return total;

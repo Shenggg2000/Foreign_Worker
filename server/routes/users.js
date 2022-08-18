@@ -3,13 +3,17 @@ const router = express.Router();
 const users = require('../services/users');
 
 /* GET programming languages. */
-router.get('/', async function(req, res, next) {
+router.get('/', async function (req, res, next) {
   try {
     res.json(await users.getUsers());
   } catch (err) {
     console.error(`Error while getting users `, err.message);
     next(err);
   }
+});
+
+router.get('/123', async function (req, res, next) {
+  res.json({ message: "ok2" });
 });
 
 module.exports = router;

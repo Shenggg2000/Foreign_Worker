@@ -14,7 +14,7 @@ export default (props) => {
   }
 
   const onSubmit = () => {
-    props.history.push("/foreign-worker/payroll/history/view/1");
+    props.history.push("/payroll/history/view/1");
   }
 
   return (

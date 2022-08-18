@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Image, Form, Modal, Button, InputGroup } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faAngleDown, faAngleUp, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { faAngleDown, faAngleUp, faFilePdf, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { usePayrollUpdate } from '../contexts/PayrollContext';
 import "../styles.scss";
 
@@ -10,10 +10,18 @@ export default (props) => {
   const [showMoreDetail, setShowMoreDetail] = useState(false);
   const [showCM, setShowCM] = useState(false);
   const [showDM, setShowDM] = useState(false);
+  const [showWorkUnit, setShowWorkUnit] = useState(false);
   const [addCompensationType, setAddCompensationType] = useState("");
   const [addCompensationAmount, setAddCompensationAmount] = useState(0);
   const [addDeductionType, setAddDeductionType] = useState("");
   const [addDeductionAmount, setAddDeductionAmount] = useState(0);
+  let workUnitTemp = 0;
+  if (emp.salaryFrequency === "daily") {
+    workUnitTemp = emp.dayWorked;
+  } else if (emp.salaryFrequency === "hourly") {
+    workUnitTemp = emp.hourWorked;
+  }
+  const [workUnit, setWorkUnit] = useState(workUnitTemp);
 
   const changeShow = () => {
     if (emp.optIn) {
@@ -30,6 +38,10 @@ export default (props) => {
     setAddDeductionType("");
     setAddDeductionAmount(0);
   };
+  const handleCloseWorkUnit = () => {
+    setShowWorkUnit(false);
+    setWorkUnit(workUnitTemp);
+  };
   const getCompensationName = (id) => {
     for (let item of compensationTypeList) {
       if (item.id == id) {
@@ -43,6 +55,9 @@ export default (props) => {
         return item.name;
       }
     }
+  }
+  const capitalizeFirstLetter = (string) => {
+    return string.charAt(0).toUpperCase() + string.slice(1);
   }
 
   const payrollUpdate = usePayrollUpdate();
@@ -99,9 +114,49 @@ export default (props) => {
             <div className='detail-area'>
               <div className='d-flex'>
                 <div className='flex-grow-1 pe-4 border-end-eee'>
-                  <div className='d-flex justify-content-between pb-2 border-bottom-eee'>
-                    <p className='mb-0 fw-bold'>Basic Salary (Monthly)</p>
-                    <p className='mb-0 fw-bold'>RM {emp.basicSalary == 0 ? 0 : Number(emp.basicSalary).toFixed(2)}</p>
+                  <div className='pb-2 border-bottom-eee'>
+                    <div className='d-flex justify-content-between pb-2'>
+                      <p className='mb-0 fw-bold'>Basic Salary (Monthly)</p>
+                      <p className='mb-0 fw-bold'>RM {emp.basicSalary == 0 ? 0 : Number(emp.basicSalary).toFixed(2)}</p>
+                    </div>
+                    {
+                      emp.salaryFrequency === "hourly" ?
+                        <>
+                          <div className='d-flex justify-content-between pb-2 text-light-gray'>
+                            <p className='mb-0'>Salary Per Hour</p>
+                            <p className='mb-0'>RM {emp.basicSalaryBasedOnUnit == 0 ? 0 : Number(emp.basicSalaryBasedOnUnit).toFixed(2)}</p>
+                          </div>
+                          <div className='d-flex justify-content-between pb-2 text-light-gray'>
+                            <p className='mb-0'>
+                              <span className='cursor-pointer me-1' onClick={() => { setShowWorkUnit(true) }}>
+                                <FontAwesomeIcon icon={faEdit} />
+                              </span>
+                              {"Total hours"}
+                            </p>
+                            <p className='mb-0'>{emp.hourWorked}</p>
+                          </div>
+                        </>
+                        : ""
+                    }
+                    {
+                      emp.salaryFrequency === "daily" ?
+                        <>
+                          <div className='d-flex justify-content-between pb-2 text-light-gray'>
+                            <p className='mb-0'>Salary Per Day</p>
+                            <p className='mb-0'>RM {emp.basicSalaryBasedOnUnit == 0 ? 0 : Number(emp.basicSalaryBasedOnUnit).toFixed(2)}</p>
+                          </div>
+                          <div className='d-flex justify-content-between pb-2 text-light-gray'>
+                            <p className='mb-0'>
+                              <span className='cursor-pointer me-1' onClick={() => { setShowWorkUnit(true) }}>
+                                <FontAwesomeIcon icon={faEdit} />
+                              </span>
+                              {"Total days"}
+                            </p>
+                            <p className='mb-0'>{emp.dayWorked}</p>
+                          </div>
+                        </>
+                        : ""
+                    }
                   </div>
                   <div className='pt-2 border-bottom-eee'>
                     <div className='d-flex justify-content-between pb-2'>
@@ -299,6 +354,37 @@ export default (props) => {
                   Add
                 </Button>
                 <Button variant="link" className="text-gray ms-auto" onClick={handleCloseDM}>
+                  Close
+                </Button>
+              </Modal.Footer>
+            </Modal>
+            <Modal as={Modal.Dialog} centered show={showWorkUnit} onHide={handleCloseWorkUnit}>
+              <Modal.Header>
+                <Modal.Title className="h6">Change Total {emp.salaryFrequency === "daily" ? "Days" : "" + emp.salaryFrequency === "hourly" ? "Hours" : ""}</Modal.Title>
+                <Button variant="close" aria-label="Close" onClick={handleCloseWorkUnit} />
+              </Modal.Header>
+              <Modal.Body>
+                <Form>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Total {emp.salaryFrequency === "daily" ? "Days" : "" + emp.salaryFrequency === "hourly" ? "Hours" : ""}</Form.Label>
+                    <Form.Control type="number" placeholder="Amount"
+                      value={workUnit}
+                      onChange={(e) => {
+                        setWorkUnit(e.target.value);
+                      }} />
+                  </Form.Group>
+                </Form>
+              </Modal.Body>
+              <Modal.Footer>
+                <Button variant="secondary" onClick={(e) => {
+                  payrollUpdate({
+                    action: "update-salary-frequent", empId: emp.empId, value: { workUnit }
+                  });
+                  handleCloseWorkUnit();
+                }}>
+                  Change
+                </Button>
+                <Button variant="link" className="text-gray ms-auto" onClick={handleCloseWorkUnit}>
                   Close
                 </Button>
               </Modal.Footer>

@@ -7,7 +7,7 @@ export default (props) => {
 
   return (
     <Link to={{
-      pathname: '/foreign-worker/payroll/history/view/' + pId,
+      pathname: '/payroll/history/view/' + pId,
     }}>
       <div className='history-list d-flex p-3 rounded mb-3 align-items-end'>
         <div className='flex-grow-1'>
