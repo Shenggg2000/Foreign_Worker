@@ -1,6 +1,7 @@
 import React, { useContext, useState, useEffect } from 'react';
 import { calculateSocso } from '../utils/SocsoCalculation';
 import { calculateEis } from '../utils/EisCalculation';
+import useToken from '../../useToken';
 
 const PayrollContext = React.createContext();
 const PayrollUpdateContext = React.createContext();
@@ -14,6 +15,7 @@ export function usePayrollUpdate() {
 }
 
 export function PayrollProvider({ children }) {
+  const { token } = useToken();
   const [payroll, setPayroll] = useState({
     employees: [],
     totalGrossSalary: 0,
@@ -24,62 +26,23 @@ export function PayrollProvider({ children }) {
   });
 
   useEffect(() => {
-    let apiReturn = [
-      {
-        empId: 1,
-        empName: "Ali",
-        empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
-        basicSalary: 3000,
-        basicSalaryBasedOnUnit: 3000,
-        salaryFrequency: "monthly",
-        dayWorked: 20,
-        hourWorked: 160,
-        compensation: {
-          totalAmount: 0,
-          items: []
-        },
-        deduction: {
-          totalAmount: 0,
-          items: []
-        },
-        contributionOption: {
-          pcbNeeded: false,
-          eisNeeded: true,
-          epfNeeded: true,
-          employeeRate: 0.11,
-          employerRate: 0.13,
-          isSocsoCategory1: false,
-        },
+    let apiReturn = null;
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
       },
-      {
-        empId: 2,
-        empName: "Abi",
-        empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
-        basicSalary: 0,
-        basicSalaryBasedOnUnit: 100,
-        salaryFrequency: "daily",
-        dayWorked: 20,
-        hourWorked: 160,
-        compensation: {
-          totalAmount: 0,
-          items: []
-        },
-        deduction: {
-          totalAmount: 0,
-          items: []
-        },
-        contributionOption: {
-          pcbNeeded: false,
-          eisNeeded: true,
-          epfNeeded: true,
-          employeeRate: 0.11,
-          employerRate: 0.13,
-          isSocsoCategory1: false,
-        },
-      },
-    ];
-    let calculatedPayroll = calculatePayroll(apiReturn);
-    setPayroll(calculatedPayroll);
+    };
+    fetch('http://localhost:3001/api/payroll/getemployees', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          apiReturn = data.data;
+          let calculatedPayroll = calculatePayroll(apiReturn);
+          setPayroll(calculatedPayroll);
+        }
+      });
   }, []);
 
   function updatePayroll(updateInfo) {

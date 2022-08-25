@@ -4,147 +4,31 @@ import { Row, Col, Card } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDownload } from "@fortawesome/free-solid-svg-icons";
 import HistoryEmployeeList from './components/HistoryEmployeeList';
+import useToken from '../useToken';
 import "./styles.scss";
 
-export default () => {
+export default (props) => {
   const [payroll, setPayroll] = useState({});
   const [employeeList, setEmployeeList] = useState([]);
+  const { token } = useToken();
 
   useEffect(() => {
-    let apiReturn = {
-      id: 1,
-      totalPayrollCost: 6974,
-      totalEmployeeNetPay: 5426,
-      totalEpfPayment: 1408,
-      totalSocsoPayment: 80,
-      totalGrossSalary: 6400,
-      totalDeduction: 200,
-      totalContribution: 774,
-      totalNetSalary: 5426,
-      totalEmployerCost: 774,
-      employees: [
-        {
-          empName: "Ali",
-          empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
-          grossSalary: 3200,
-          basicSalary: 3000,
-          compensation: {
-            totalAmount: 200,
-            items: [
-              {
-                name: 'Bonus',
-                amount: 200,
-              }
-            ]
-          },
-          deduction: {
-            totalAmount: 100,
-            items: [
-              {
-                name: 'Late',
-                amount: 100,
-              }
-            ]
-          },
-          contribution: {
-            totalAmount: 387,
-            items: [
-              {
-                name: 'EPF',
-                amount: 352,
-              },
-              {
-                name: 'SOCSO',
-                amount: 20,
-              },
-              {
-                name: 'Other',
-                amount: 15,
-              }
-            ]
-          },
-          netSalary: 2713,
-          employerCost: {
-            totalAmount: 387,
-            items: [
-              {
-                name: 'EPF',
-                amount: 352,
-              },
-              {
-                name: 'SOCSO',
-                amount: 20,
-              },
-              {
-                name: 'Other',
-                amount: 15,
-              }
-            ]
-          },
-        },
-        {
-          empName: "Abi",
-          empImg: "https://i.pinimg.com/originals/10/c9/c0/10c9c02224ae9c08ba781bae2a856675.jpg",
-          grossSalary: 3200,
-          basicSalary: 3000,
-          compensation: {
-            totalAmount: 200,
-            items: [
-              {
-                name: 'Bonus',
-                amount: 200,
-              }
-            ]
-          },
-          deduction: {
-            totalAmount: 100,
-            items: [
-              {
-                name: 'Late',
-                amount: 100,
-              }
-            ]
-          },
-          contribution: {
-            totalAmount: 387,
-            items: [
-              {
-                name: 'EPF',
-                amount: 352,
-              },
-              {
-                name: 'SOCSO',
-                amount: 20,
-              },
-              {
-                name: 'Other',
-                amount: 15,
-              }
-            ]
-          },
-          netSalary: 2713,
-          employerCost: {
-            totalAmount: 387,
-            items: [
-              {
-                name: 'EPF',
-                amount: 352,
-              },
-              {
-                name: 'SOCSO',
-                amount: 20,
-              },
-              {
-                name: 'Other',
-                amount: 15,
-              }
-            ]
-          },
-        },
-      ],
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
     };
-    setPayroll(apiReturn);
-    setEmployeeList(apiReturn.employees);
+    fetch('http://localhost:3001/api/payroll/history/' + props.match.params.id, requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          setPayroll(data.data);
+          setEmployeeList(data.data.employees);
+        }
+      });
+
   }, [])
 
   return (
@@ -165,25 +49,25 @@ export default () => {
               <Col md={3} xs={12} className="mb-3">
                 <div className='p-3 rounded payroll-detail'>
                   <p className='mb-1 card-title'>Total Payroll Cost</p>
-                  <p className='mb-0 fw-bolder'>RM {payroll.totalPayrollCost}</p>
+                  <p className='mb-0 fw-bolder'>RM {payroll.totalPayrollCost == 0 ? 0 : Number(payroll.totalPayrollCost).toFixed(2)}</p>
                 </div>
               </Col>
               <Col md={3} xs={12} className="mb-3">
                 <div className='p-3 rounded payroll-detail'>
                   <p className='mb-1 card-title'>Total Employee Net Pay</p>
-                  <p className='mb-0 fw-bolder'>RM {payroll.totalEmployeeNetPay}</p>
+                  <p className='mb-0 fw-bolder'>RM {payroll.totalEmployeeNetPay == 0 ? 0 : Number(payroll.totalEmployeeNetPay).toFixed(2)}</p>
                 </div>
               </Col>
               <Col md={3} xs={12} className="mb-3">
                 <div className='p-3 rounded payroll-detail'>
                   <p className='mb-1 card-title'>Total EPF Payment</p>
-                  <p className='mb-0 fw-bolder'>RM {payroll.totalEpfPayment}</p>
+                  <p className='mb-0 fw-bolder'>RM {payroll.totalEpfPayment == 0 ? 0 : Number(payroll.totalEpfPayment).toFixed(2)}</p>
                 </div>
               </Col>
               <Col md={3} xs={12} className="mb-3">
                 <div className='p-3 rounded payroll-detail'>
                   <p className='mb-1 card-title'>Total SOCSO Payment</p>
-                  <p className='mb-0 fw-bolder'>RM {payroll.totalSocsoPayment}</p>
+                  <p className='mb-0 fw-bolder'>RM {payroll.totalSocsoPayment == 0 ? 0 : Number(payroll.totalSocsoPayment).toFixed(2)}</p>
                 </div>
               </Col>
             </Row>
@@ -196,23 +80,23 @@ export default () => {
                   </div>
                   <div className='cost'>
                     <p className='mb-0 card-title'>Gross Salary</p>
-                    <p className='mb-0 fw-bolder'>RM {payroll.totalGrossSalary}</p>
+                    <p className='mb-0 fw-bolder'>RM {payroll.totalGrossSalary == 0 ? 0 : Number(payroll.totalGrossSalary).toFixed(2)}</p>
                   </div>
                   <div className='cost'>
                     <p className='mb-0 card-title'>Deduction</p>
-                    <p className='mb-0 fw-bolder'>RM {payroll.totalDeduction}</p>
+                    <p className='mb-0 fw-bolder'>RM {payroll.totalDeduction == 0 ? 0 : Number(payroll.totalDeduction).toFixed(2)}</p>
                   </div>
                   <div className='cost'>
                     <p className='mb-0 card-title'>Contribution</p>
-                    <p className='mb-0 fw-bolder'>RM {payroll.totalContribution}</p>
+                    <p className='mb-0 fw-bolder'>RM {payroll.totalContribution == 0 ? 0 : Number(payroll.totalContribution).toFixed(2)}</p>
                   </div>
                   <div className='cost'>
                     <p className='mb-0 card-title'>Net Salary</p>
-                    <p className='mb-0 fw-bolder'>RM {payroll.totalNetSalary}</p>
+                    <p className='mb-0 fw-bolder'>RM {payroll.totalNetSalary == 0 ? 0 : Number(payroll.totalNetSalary).toFixed(2)}</p>
                   </div>
                   <div className='cost'>
                     <p className='mb-0 card-title'>Employer Cost</p>
-                    <p className='mb-0 fw-bolder'>RM {payroll.totalEmployerCost}</p>
+                    <p className='mb-0 fw-bolder'>RM {payroll.totalEmployerCost == 0 ? 0 : Number(payroll.totalEmployerCost).toFixed(2)}</p>
                   </div>
                   <div className='dropdown-column'>
                   </div>

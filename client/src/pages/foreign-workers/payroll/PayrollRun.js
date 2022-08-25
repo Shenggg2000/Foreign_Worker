@@ -1,20 +1,40 @@
 
 import React, { useState } from 'react';
 import { Row, Col, Card, Button } from '@themesberg/react-bootstrap';
-import { PayrollProvider } from './contexts/PayrollContext';
 import PayrollRun1 from './PayrollRun1';
 import PayrollRun2 from './PayrollRun2';
+import { usePayroll } from './contexts/PayrollContext';
+import useToken from '../useToken';
+import { useHistory } from "react-router-dom";
 import "./styles.scss";
 
 export default (props) => {
   const [isStage1, setIsStage1] = useState(true);
+  const payroll = usePayroll();
+  const { token } = useToken();
+  const history = useHistory();
 
   function changeStage() {
     setIsStage1(prevIsStage1 => !prevIsStage1)
   }
 
-  const onSubmit = () => {
-    props.history.push("/payroll/history/view/1");
+  const onSubmit = (e) => {
+    e.preventDefault();
+    const requestOptions = {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      body: JSON.stringify(payroll)
+    }
+    fetch('http://localhost:3001/api/payroll/run', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          history.push("/payroll/history/view/" + data.data.id);
+        }
+      });
   }
 
   return (
@@ -40,14 +60,12 @@ export default (props) => {
               </div>
             </div>
             <div className='w-100'>
-              <PayrollProvider>
-                {
-                  isStage1 ?
-                    <PayrollRun1></PayrollRun1>
-                    :
-                    <PayrollRun2></PayrollRun2>
-                }
-              </PayrollProvider>
+              {
+                isStage1 ?
+                  <PayrollRun1></PayrollRun1>
+                  :
+                  <PayrollRun2></PayrollRun2>
+              }
             </div>
           </Card.Body>
         </Card>

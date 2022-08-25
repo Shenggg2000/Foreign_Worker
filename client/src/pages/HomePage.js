@@ -55,7 +55,7 @@ import Toasts from "./components/Toasts";
 import FWDashboard from "./foreign-workers/dashboard/Dashboard";
 import FWEmployeeTable from "./foreign-workers/employees/EmployeeTable";
 import FWLinks from "./foreign-workers/links/Links";
-import FWPayroll from "./foreign-workers/payroll/PayrollRun";
+import FWPayroll from "./foreign-workers/payroll/Payroll";
 import FWPayrollHistory from "./foreign-workers/payroll/PayrollHistory";
 import FWPayrollHistoryDetail from "./foreign-workers/payroll/PayrollHistoryDetail";
 import FWReminder from "./foreign-workers/reminder/Reminder";

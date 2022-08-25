@@ -2,28 +2,27 @@
 import React, { useEffect, useState } from 'react';
 import { Row, Col, Card } from '@themesberg/react-bootstrap';
 import HistoryList from './components/HistoryList';
+import useToken from '../useToken';
 
 export default () => {
   const [historyList, setHistoryList] = useState([]);
+  const { token } = useToken();
 
   useEffect(() => {
-    let apiReturn = [
-      {
-        id: 1,
-        timestamp: 1654532435,
-        numEmp: 2,
-        status: true,
-        total: 3000,
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
       },
-      {
-        id: 2,
-        timestamp: 1658552446,
-        numEmp: 3,
-        status: false,
-        total: 4000,
-      },
-    ];
-    processHistoryList(apiReturn);
+    };
+    fetch('http://localhost:3001/api/payroll/history', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          processHistoryList(data.data);
+        }
+      });
   }, [])
 
   function processHistoryList(list) {
@@ -70,9 +69,9 @@ export default () => {
                       {eachYear.item.map((eachMonth) => {
                         return (
                           <HistoryList key={eachMonth.id} pId={eachMonth.id} pYear={eachMonth.year}
-                          pMonth={eachMonth.month} pDate={eachMonth.date}
-                          pNumEmp={eachMonth.numEmp} pStatus={eachMonth.status}
-                          pTotal={eachMonth.total}
+                            pMonth={eachMonth.month} pDate={eachMonth.date}
+                            pNumEmp={eachMonth.numEmp} pStatus={eachMonth.status}
+                            pTotal={eachMonth.total}
                           ></HistoryList>
                         )
                       })}

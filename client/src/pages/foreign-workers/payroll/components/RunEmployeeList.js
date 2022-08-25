@@ -81,7 +81,7 @@ export default (props) => {
         </div>
         <div className='flex-grow-1'>
           <div className='d-flex align-items-center'>
-            <Image src={emp.empImg} className="user-avatar md-avatar rounded-circle me-2" />
+            <Image src={"http://localhost:3001/uploads/"+emp.empImg} className="user-avatar md-avatar rounded-circle me-2" />
             <p className='mb-0 fw-bold'>{emp.empName}</p>
           </div>
         </div>

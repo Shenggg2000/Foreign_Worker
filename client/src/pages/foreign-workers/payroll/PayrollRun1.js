@@ -11,34 +11,38 @@ export default () => {
   const [deductionTypeList, setDeductionTypeList] = useState([]);
 
   useEffect(() => {
-    let apiReturn = [
-      {
-        id: 1,
-        name: "Bonus A",
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-      {
-        id: 2,
-        name: "Bonus B",
+    };
+    fetch('http://localhost:3001/api/payroll/getadditions', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          setCompensationTypeList(data.data);
+        }
+      });
+    const requestOptions2 = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
       },
-    ];
-    let apiReturn2 = [
-      {
-        id: 1,
-        name: "Deduction A",
-      },
-      {
-        id: 2,
-        name: "Deduction B",
-      },
-    ];
-    setCompensationTypeList(apiReturn);
-    setDeductionTypeList(apiReturn2);
+    };
+    fetch('http://localhost:3001/api/payroll/getdeductions', requestOptions2)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          setDeductionTypeList(data.data);
+        }
+      });
   }, []);
 
   const countOptInEmployees = () => {
-    return payroll.employees.reduce((count, emp)=> {
+    return payroll.employees.reduce((count, emp) => {
       return emp.optIn ? ++count : count;
-    },0)
+    }, 0)
   }
 
   return (

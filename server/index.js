@@ -1,8 +1,8 @@
 const express = require("express");
 const app = express();
 const port = 3001;
-const UsersRouter = require("./routes/users");
 const AuthRouter = require("./routes/auth");
+const PayrollRouter = require("./routes/payroll");
 const cors = require('cors');
 const dotenv = require('dotenv');
 
@@ -19,7 +19,7 @@ app.use(
 app.use(cors());
 
 app.use("/api/auth", AuthRouter);
-app.use("/api/users", UsersRouter);
+app.use("/api/payroll", PayrollRouter);
 
 /* Error handler middleware */
 app.use((err, req, res, next) => {

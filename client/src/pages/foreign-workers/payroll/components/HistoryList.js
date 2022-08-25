@@ -21,7 +21,7 @@ export default (props) => {
           <p className={`m-0 text-end fw-bold ${pStatus ? "text-success" : "text-danger"}`}>{pStatus ? "Success" : "Fail"} </p>
         </div>
         <div className='custom-column-size'>
-          <p className='m-0 text-end fw-bold'>RM {pTotal}</p>
+          <p className='m-0 text-end fw-bold'>RM {pTotal == 0 ? 0 : Number(pTotal).toFixed(2)}</p>
         </div>
       </div>
     </Link>
