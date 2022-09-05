@@ -58,7 +58,6 @@ import FWLinks from "./foreign-workers/links/Links";
 import FWPayroll from "./foreign-workers/payroll/Payroll";
 import FWPayrollHistory from "./foreign-workers/payroll/PayrollHistory";
 import FWPayrollHistoryDetail from "./foreign-workers/payroll/PayrollHistoryDetail";
-import FWReminder from "./foreign-workers/reminder/Reminder";
 import FWSetting from "./foreign-workers/settings/Settings";
 import FWLogin from "./foreign-workers/Login";
 import FWRegister from "./foreign-workers/Register";
@@ -113,6 +112,7 @@ const RouteWithSidebar = ({ component: Component, ...rest }) => {
     localStorage.setItem('settingsVisible', !showSettings);
   }
 
+  console.log(rest.path);
   if (!rest.path.includes("library")) {
     return (
       <Route {...rest} render={props => {
@@ -209,7 +209,6 @@ export default () => (
     <RouteWithSidebar exact path={Routes.ForeignWorkerPayroll.path} component={FWPayroll} />
     <RouteWithSidebar exact path={Routes.ForeignWorkerPayrollHistory.path} component={FWPayrollHistory} />
     <RouteWithSidebar path={Routes.ForeignWorkerPayrollHistoryDetail.path} component={FWPayrollHistoryDetail} />
-    <RouteWithSidebar exact path={Routes.ForeignWorkerReminder.path} component={FWReminder} />
     <RouteWithSidebar exact path={Routes.ForeignWorkerLinks.path} component={FWLinks} />
     <RouteWithSidebar exact path={Routes.ForeignWorkerSetting.path} component={FWSetting} />
     <RouteWithLoader exact path={Routes.ForeignWorkerLogin.path} component={FWLogin} />

@@ -11,8 +11,64 @@ export default (props) => {
   const [payroll, setPayroll] = useState({});
   const [employeeList, setEmployeeList] = useState([]);
   const { token } = useToken();
+  const [company, setCompany] = useState({
+    address_city: "",
+    address_post_code: "",
+    address_state: "",
+    address_street: "",
+    contact: "",
+    employer_email: "",
+    employer_id: "",
+    employer_name: "",
+    epf_no: "",
+    logo: "",
+    reg_no: "",
+    socso_no: "",
+  });
 
-  useEffect(() => {
+  const getEmployer = () => {
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+      // body: JSON.stringify({})
+    };
+    fetch('http://localhost:3001/api/auth/user', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          let info = data.data.result
+          console.log(info + "123");
+          setCompany({
+            address_city: detectIsNull(info.address_city),
+            address_post_code: detectIsNull(info.address_post_code),
+            address_state: detectIsNull(info.address_state),
+            address_street: detectIsNull(info.address_street),
+            contact: detectIsNull(info.contact),
+            employer_email: detectIsNull(info.employer_email),
+            employer_id: info.employer_id,
+            employer_name: info.employer_name,
+            epf_no: detectIsNull(info.epf_no),
+            logo: detectIsNull(info.logo),
+            reg_no: detectIsNull(info.reg_no),
+            socso_no: detectIsNull(info.socso_no),
+          });
+        }
+      });
+  }
+
+  const detectIsNull = (str) => {
+    if (!str) {
+      return "";
+    } else if (str === "null" || str === "NULL") {
+      return "";
+    }
+    return str;
+  }
+
+  const getHistory = () => {
     const requestOptions = {
       method: 'GET',
       headers: {
@@ -28,8 +84,27 @@ export default (props) => {
           setEmployeeList(data.data.employees);
         }
       });
-
+  }
+  
+  useEffect(() => {
+    getHistory();
+    getEmployer();
   }, [])
+
+  const timestampToYear = (timestamp) => {
+    let timestampToDate = new Date(parseInt(timestamp) * 1000);
+    return timestampToDate.getFullYear();
+  }
+
+  const timestampToMonth = (timestamp) => {
+    let timestampToDate = new Date(parseInt(timestamp) * 1000);
+    return timestampToDate.toLocaleString('default', { month: 'long' });
+  }
+
+  const timestampToDate = (timestamp) => {
+    let timestampToDate = new Date(parseInt(timestamp) * 1000);
+    return timestampToDate.getDate();
+  }
 
   return (
     <Row>
@@ -38,12 +113,12 @@ export default (props) => {
           <Card.Body>
             <div className='d-flex justify-content-between align-items-center mb-3'>
               <div>
-                <h1 className="fs-4 fw-bold">Payroll for July 2022</h1>
-                <p className='text-light m-0'>created on 13 July, 2022</p>
+                <h1 className="fs-4 fw-bold">Payroll for {timestampToMonth(payroll.timestamp)} {timestampToYear(payroll.timestamp)}</h1>
+                <p className='text-light m-0'>created on {timestampToDate(payroll.timestamp)} {timestampToMonth(payroll.timestamp)}, {timestampToYear(payroll.timestamp)}</p>
               </div>
-              <div>
+              {/* <div>
                 <p className='text-primary mb-0 me-2'><FontAwesomeIcon icon={faDownload} className="me-2" /> Export</p>
-              </div>
+              </div> */}
             </div>
             <Row>
               <Col md={3} xs={12} className="mb-3">
@@ -105,7 +180,7 @@ export default (props) => {
                   {
                     employeeList.map((emp) => {
                       return (
-                        <HistoryEmployeeList key={emp.empName} emp={emp} />
+                        <HistoryEmployeeList key={emp.empName} emp={emp} company={company} month={timestampToMonth(payroll.timestamp)} year={timestampToYear(payroll.timestamp)}/>
                       )
                     })
                   }

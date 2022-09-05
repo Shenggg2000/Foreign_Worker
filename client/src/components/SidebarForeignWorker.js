@@ -105,7 +105,6 @@ export default (props = {}) => {
                 <NavItem title="Run Payroll" link={Routes.ForeignWorkerPayroll.path} />
                 <NavItem title="Payroll History" link={Routes.ForeignWorkerPayrollHistory.path} />
               </CollapsableNavItem>
-              <NavItem title="Reminder" icon={faCalendarAlt} link={Routes.ForeignWorkerReminder.path} />
               <NavItem title="Links" icon={faExternalLinkAlt} link={Routes.ForeignWorkerLinks.path} />
               <NavItem title="Settings" icon={faCog} link={Routes.ForeignWorkerSetting.path} />
 

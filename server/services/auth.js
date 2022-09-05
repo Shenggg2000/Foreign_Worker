@@ -103,11 +103,20 @@ async function updateEmployer(input, user, logo) {
   if (logo) {
     sqlLogo = 'logo="' + logo.filename + '", ';
   }
+
+  for (const [key, value] of Object.entries(input)) {
+    if (value === "") {
+      input[key] = "NULL";
+    }else{
+      input[key] = '"'+value+'"';
+    }
+  }
+
   const result = await db.query(
     `UPDATE employers 
-    SET name="${input.employer_name}", email="${input.employer_email}", contact="${input.contact}", address_street="${input.address_street}", address_city="${input.address_city}",
-    address_state="${input.address_state}", address_post_code="${input.address_post_code}", ${sqlLogo} reg_no="${input.reg_no}", 
-    epf_no="${input.epf_no}", socso_no="${input.socso_no}", modified_at=NOW() 
+    SET name=${input.employer_name}, email=${input.employer_email}, contact=${input.contact}, address_street=${input.address_street}, address_city=${input.address_city},
+    address_state=${input.address_state}, address_post_code=${input.address_post_code}, ${sqlLogo} reg_no=${input.reg_no}, 
+    epf_no=${input.epf_no}, socso_no=${input.socso_no}, modified_at=NOW() 
     WHERE id = "${user.employer_id}"`
   );
 

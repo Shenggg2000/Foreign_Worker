@@ -52,7 +52,6 @@ export const Routes = {
     ForeignWorkerPayroll: { path: "/payroll/run" },
     ForeignWorkerPayrollHistory: { path: "/payroll/history" },
     ForeignWorkerPayrollHistoryDetail: { path: "/payroll/history/view/:id" },
-    ForeignWorkerReminder: { path: "/reminder" },
     ForeignWorkerLinks: { path: "/links" },
     ForeignWorkerSetting: { path: "/setting" },
     ForeignWorkerProfile: { path: "/profile" },

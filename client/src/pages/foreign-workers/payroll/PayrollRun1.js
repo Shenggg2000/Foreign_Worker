@@ -2,15 +2,21 @@ import React, { useState, useEffect } from 'react';
 import { usePayroll, usePayrollUpdate } from './contexts/PayrollContext';
 import { Row, Col } from '@themesberg/react-bootstrap';
 import RunEmployeeList from './components/RunEmployeeList';
+import useToken from '../useToken';
 
 export default () => {
   const payroll = usePayroll();
-  const payrollUpdate = usePayrollUpdate();
+  const { token } = useToken();
 
   const [compensationTypeList, setCompensationTypeList] = useState([]);
   const [deductionTypeList, setDeductionTypeList] = useState([]);
 
   useEffect(() => {
+    getAdditionList();
+    getDeductionList();
+  }, []);
+
+  const getAdditionList = () => {
     const requestOptions = {
       method: 'GET',
       headers: {
@@ -24,6 +30,9 @@ export default () => {
           setCompensationTypeList(data.data);
         }
       });
+  }
+
+  const getDeductionList = () => {
     const requestOptions2 = {
       method: 'GET',
       headers: {
@@ -37,7 +46,7 @@ export default () => {
           setDeductionTypeList(data.data);
         }
       });
-  }, []);
+  }
 
   const countOptInEmployees = () => {
     return payroll.employees.reduce((count, emp) => {

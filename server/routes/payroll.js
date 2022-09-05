@@ -12,7 +12,7 @@ router.get('/getemployees', helper.authenticateToken, async (req, res) => {
         errorMessage: "",
         data: result
       });
-    }else{
+    } else {
       res.json({
         error: true,
         errorMessage: "Get Employee Error",
@@ -33,7 +33,7 @@ router.get('/getadditions', async (req, res) => {
         errorMessage: "",
         data: result
       });
-    }else{
+    } else {
       res.json({
         error: true,
         errorMessage: "Get Additions Error",
@@ -54,7 +54,7 @@ router.get('/getdeductions', async (req, res) => {
         errorMessage: "",
         data: result
       });
-    }else{
+    } else {
       res.json({
         error: true,
         errorMessage: "Get Deductions Error",
@@ -75,7 +75,7 @@ router.post('/run', helper.authenticateToken, async (req, res) => {
         errorMessage: "",
         data: result
       });
-    }else{
+    } else {
       res.json({
         error: true,
         errorMessage: "Run Payroll Error",
@@ -96,7 +96,7 @@ router.get('/history', helper.authenticateToken, async (req, res) => {
         errorMessage: "",
         data: result
       });
-    }else{
+    } else {
       res.json({
         error: true,
         errorMessage: "Get Historys Error",
@@ -117,7 +117,7 @@ router.get('/history/:id', async (req, res) => {
         errorMessage: "",
         data: result
       });
-    }else{
+    } else {
       res.json({
         error: true,
         errorMessage: "Get Specific Historys Error",
@@ -126,6 +126,27 @@ router.get('/history/:id', async (req, res) => {
     }
   } catch (err) {
     console.error(`Get Specific Historys Error`, err.message);
+  }
+});
+
+router.get('/runable', helper.authenticateToken, async (req, res) => {
+  try {
+    let result = await payroll.runable(req.user);
+    if (result != 'Get Runable Error') {
+      res.json({
+        error: false,
+        errorMessage: "",
+        data: result
+      });
+    } else {
+      res.json({
+        error: true,
+        errorMessage: "Get Runable Error",
+        data: {}
+      });
+    }
+  } catch (err) {
+    console.error(`Get Runable Error`, err.message);
   }
 });
 

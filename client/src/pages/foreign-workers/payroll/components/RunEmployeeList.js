@@ -3,10 +3,12 @@ import { Image, Form, Modal, Button, InputGroup } from '@themesberg/react-bootst
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faFilePdf, faEdit } from "@fortawesome/free-solid-svg-icons";
 import { usePayrollUpdate } from '../contexts/PayrollContext';
+import { Payslip } from './Payslip';
 import "../styles.scss";
 
 export default (props) => {
   const { emp, compensationTypeList, deductionTypeList } = props;
+  
   const [showMoreDetail, setShowMoreDetail] = useState(false);
   const [showCM, setShowCM] = useState(false);
   const [showDM, setShowDM] = useState(false);
@@ -15,6 +17,7 @@ export default (props) => {
   const [addCompensationAmount, setAddCompensationAmount] = useState(0);
   const [addDeductionType, setAddDeductionType] = useState("");
   const [addDeductionAmount, setAddDeductionAmount] = useState(0);
+  const [payslipShow, setPayslipShow] = useState(false);
   let workUnitTemp = 0;
   if (emp.salaryFrequency === "daily") {
     workUnitTemp = emp.dayWorked;
@@ -81,7 +84,7 @@ export default (props) => {
         </div>
         <div className='flex-grow-1'>
           <div className='d-flex align-items-center'>
-            <Image src={"http://localhost:3001/uploads/"+emp.empImg} className="user-avatar md-avatar rounded-circle me-2" />
+            <Image src={"http://localhost:3001/uploads/" + emp.empImg} className="user-avatar md-avatar rounded-circle me-2" />
             <p className='mb-0 fw-bold'>{emp.empName}</p>
           </div>
         </div>
@@ -109,7 +112,6 @@ export default (props) => {
           ?
           <div className='tbody-more-detail d-flex mx-3 p-3'>
             <div className='flex-grow-1'>
-              <p className='payslip mb-0 fw-bold text-primary'><FontAwesomeIcon icon={faFilePdf} className="me-2" />Payslip</p>
             </div>
             <div className='detail-area'>
               <div className='d-flex'>
@@ -166,7 +168,7 @@ export default (props) => {
                     {
                       emp.compensation.items.map((item, index) => {
                         return (
-                          <div key={item.name} className='d-flex justify-content-between pb-2 text-light-gray'>
+                          <div key={item.id} className='d-flex justify-content-between pb-2 text-light-gray'>
                             <p className='mb-0'>
                               <span className='cursor-pointer' onClick={() => {
                                 payrollUpdate({

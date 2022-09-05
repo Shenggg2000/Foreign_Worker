@@ -1,0 +1,102 @@
+p {
+  font-size: 0.85rem;
+}
+
+.cursor-pointer {
+  cursor: pointer;
+}
+
+.fw-7 {
+  font-weight: 700;
+}
+
+.flex-grow-2 {
+  flex-grow: 2;
+}
+
+.hi-card {
+  background-color: #f5f8fb;
+  padding: 2rem;
+}
+
+.payroll-card {
+  background-color: #f5f8fb;
+  padding: 2rem;
+}
+
+.dropdown-menu-right.show {
+  width: 300px;
+  top: 10px !important;
+  right: 0 !important;
+}
+
+.dropdown-menu-right.show.short {
+  width: 200px;
+}
+
+.emp-row {
+  background-color: #f5f8fb;
+}
+
+.icon.icon-ys-small svg {
+  font-size: 1rem;
+}
+
+.reminder-container {
+  height: 333px;
+  overflow-y: scroll;
+  -ms-overflow-style: none;
+  /* Internet Explorer 10+ */
+  scrollbar-width: none;
+  /* Firefox */
+}
+
+.reminder-container::-webkit-scrollbar {
+  display: none;
+  /* Safari and Chrome */
+}
+
+.emp-component {
+  background-color: #fff0e9;
+
+  .ys-icon {
+    background-color: #fedac9;
+
+    svg {
+      color: #fe562d;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.payroll-component {
+  background-color: #e2f6e9;
+
+  .ys-icon {
+    background-color: #c3e9d1;
+
+    svg {
+      color: #338d4f;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.start-component {
+  background-color: #f6f4ff;
+
+  .ys-icon {
+    background-color: #dadcfe;
+
+    svg {
+      color: #614dbc;
+      font-size: 1.2rem;
+    }
+  }
+}
+
+.ys-icon {
+  width: 50px;
+  height: 50px;
+  border-radius: 25px;
+}

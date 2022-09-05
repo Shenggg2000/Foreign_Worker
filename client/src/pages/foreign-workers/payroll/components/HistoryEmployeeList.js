@@ -1,18 +1,20 @@
 import React, { useState } from 'react';
-import { Image } from '@themesberg/react-bootstrap';
+import { Image, Modal } from '@themesberg/react-bootstrap';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleDown, faAngleUp, faFilePdf } from "@fortawesome/free-solid-svg-icons";
+import { Payslip } from './Payslip';
 import "../styles.scss";
 
 export default (props) => {
-  const { emp } = props;
+  const { emp, company, month, year } = props;
   const [showMoreDetail, setShowMoreDetail] = useState(false);
+  const [payslipShow, setPayslipShow] = useState(false);
 
   const changeShow = () => setShowMoreDetail(prevShow => !prevShow);
 
   return (
     <div className='twrapper'>
-      <div className='tbody d-flex align-items-center px-3' onClick={changeShow}>
+      <div className='tbody d-flex align-items-center px-3 cursor-pointer' onClick={changeShow}>
         <div className='flex-grow-1'>
           <div className='d-flex align-items-center'>
             <Image src={"http://localhost:3001/uploads/"+emp.empImg} className="user-avatar md-avatar rounded-circle me-2" />
@@ -43,7 +45,7 @@ export default (props) => {
           ?
           <div className='tbody-more-detail d-flex mx-3 p-3'>
             <div className='flex-grow-1'>
-              <p className='ms-4 mb-0 fw-bold text-primary'><FontAwesomeIcon icon={faFilePdf} className="me-2"/>Payslip</p>
+              <p className='ms-4 mb-0 fw-bold text-primary cursor-pointer' onClick={() => setPayslipShow(true)}><FontAwesomeIcon icon={faFilePdf} className="me-2"/>Payslip</p>
             </div>
             <div className='detail-area'>
               <div className='d-flex'>
@@ -144,6 +146,21 @@ export default (props) => {
                 </div>
               </div>
             </div>
+            <Modal
+              size="lg"
+              show={payslipShow}
+              onHide={() => setPayslipShow(false)}
+              aria-labelledby="example-modal-sizes-title-lg"
+            >
+              <Modal.Header closeButton>
+                <Modal.Title id="example-modal-sizes-title-lg">
+                  Payslip for {emp.empName}
+                </Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <Payslip emp={emp} company={company} month={month} year={year}></Payslip>
+              </Modal.Body>
+            </Modal>
           </div>
           :
           ''

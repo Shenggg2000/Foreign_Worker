@@ -37,6 +37,21 @@ export default (props) => {
       });
   }
 
+  const currentYear = () => {
+    let timestampToDate = new Date();
+    return timestampToDate.getFullYear();
+  }
+
+  const currentMonth = () => {
+    let timestampToDate = new Date();
+    return timestampToDate.toLocaleString('default', { month: 'long' });
+  }
+
+  const currentDate = () => {
+    let timestampToDate = new Date();
+    return timestampToDate.getDate();
+  }
+
   return (
     <Row>
       <Col xs={12} className="p-3">
@@ -44,8 +59,8 @@ export default (props) => {
           <Card.Body>
             <div className='d-flex justify-content-between mb-3'>
               <div>
-                <h1 className="fs-4 fw-bold">Run Payroll for July 2022</h1>
-                <p className='text-light m-0'>created on 13 July, 2022</p>
+                <h1 className="fs-4 fw-bold">Run Payroll for {currentMonth()} {currentYear()}</h1>
+                <p className='text-light m-0'>created on {currentDate()} {currentMonth()}, {currentYear()}</p>
               </div>
               <div>
                 {

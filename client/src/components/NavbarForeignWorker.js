@@ -1,5 +1,5 @@
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBell, faCog, faEnvelopeOpen, faSearch, faSignOutAlt, faUserShield } from "@fortawesome/free-solid-svg-icons";
 import { faUserCircle } from "@fortawesome/free-regular-svg-icons";
@@ -14,14 +14,54 @@ import Profile3 from "../assets/img/team/profile-picture-3.jpg";
 export default (props) => {
   const [notifications, setNotifications] = useState(NOTIFICATIONS_DATA);
   const areNotificationsRead = notifications.reduce((acc, notif) => acc && notif.read, true);
-  const { deleteToken } = useToken();
+  const { token, deleteToken } = useToken();
   const history = useHistory();
+  const [companyInfo, setCompanyInfo] = useState({
+    employer_name: "",
+    logo: "",
+  });
 
-  const markNotificationsAsRead = () => {
-    setTimeout(() => {
-      setNotifications(notifications.map(n => ({ ...n, read: true })));
-    }, 300);
-  };
+  useEffect(() => {
+    loadData();
+  }, []);
+
+  const loadData = () => {
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    };
+    fetch('http://localhost:3001/api/auth/user', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          let info = data.data.result
+          console.log(info + "123");
+          setCompanyInfo({
+            employer_name: info.employer_name,
+            logo: detectIsNull(info.logo),
+          });
+        }
+      });
+  }
+
+  const detectIsNull = (str) => {
+    if (!str) {
+      return "";
+    } else if (str === "null" || str === "NULL") {
+      return "";
+    }
+    return str;
+  }
+
+  const detectImage = () => {
+    if (companyInfo.logo !== "") {
+      return 'http://localhost:3001/uploads/' + companyInfo.logo
+    }
+    return 'https://upload.wikimedia.org/wikipedia/commons/1/14/No_Image_Available.jpg';
+  }
 
   const setting = () => {
     history.push("/setting");
@@ -98,9 +138,9 @@ export default (props) => {
             <Dropdown as={Nav.Item}>
               <Dropdown.Toggle as={Nav.Link} className="pt-1 px-0">
                 <div className="media d-flex align-items-center">
-                  <Image src={Profile3} className="user-avatar md-avatar rounded-circle" />
+                  <Image src={detectImage()} className="user-avatar md-avatar rounded-circle" />
                   <div className="media-body ms-2 text-dark align-items-center d-none d-lg-block">
-                    <span className="mb-0 font-small fw-bold">Admin</span>
+                    <span className="mb-0 font-small fw-bold">{companyInfo.employer_name}</span>
                   </div>
                 </div>
               </Dropdown.Toggle>

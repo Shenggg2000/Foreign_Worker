@@ -200,8 +200,9 @@ async function allHistory(user) {
       COUNT(employee_payroll.id) AS numEmp, SUM(employee_payroll.net_salary) AS total
       FROM payrolls
       LEFT JOIN employee_payroll ON payrolls.id = employee_payroll.payroll_id
-      WHERE payrolls.employer_id = ${user.employer_id}
-      GROUP BY payrolls.id;`
+      WHERE payrolls.employer_id = ${user.employer_id} AND payrolls.status = 'PAID' 
+      GROUP BY payrolls.id
+      ORDER BY payrolls.id DESC`
     );
 
     let payrolls = helper.emptyOrRows(rows);
@@ -237,16 +238,21 @@ async function allHistory(user) {
 async function history(id) {
   try {
     const rows = await db.query(
-      `SELECT id, SUM(gross_salary) AS totalGrossSalary, SUM(net_salary) AS totalEmployeeNetPay
+      `SELECT employee_payroll.id AS id, SUM(employee_payroll.gross_salary) AS totalGrossSalary, 
+      SUM(employee_payroll.net_salary) AS totalEmployeeNetPay, payrolls.paid_date AS paid_date
       FROM employee_payroll
+      LEFT JOIN payrolls ON employee_payroll.payroll_id = payrolls.id
       WHERE employee_payroll.payroll_id = ${id}`
     );
 
     let payroll = helper.emptyOrRows(rows)[0];
     payroll.totalNetSalary = payroll.totalEmployeeNetPay;
+    payroll.timestamp = Math.floor(new Date(payroll.paid_date).getTime() / 1000);
+    delete payroll.paid_date;
 
     const rows2 = await db.query(
-      `SELECT employee_payroll.id AS empPayrollId, employees.id AS empId, employees.name AS empName, employees.image AS empImg,
+      `SELECT employee_payroll.id AS empPayrollId, employees.id AS empId, employees.name AS empName, employees.email AS email,
+      employees.image AS empImg, employees.ic_no AS ic, employees.passport_no	 AS passport, employees.contact_no AS contact_no, 
       employee_payroll.basic_salary AS basicSalary, employee_payroll.gross_salary AS grossSalary, 
       employee_payroll.net_salary AS netSalary
       FROM employee_payroll
@@ -397,6 +403,38 @@ async function history(id) {
   }
 }
 
+async function runable(user) {
+  try {
+    let date = new Date();
+    let year = date.getFullYear();
+    let month = date.getMonth() + 1;
+
+    const rows = await db.query(
+      `SELECT id
+      FROM payrolls
+      WHERE employer_id = ${user.employer_id} AND year = ${year} AND month = ${month} AND status = 'PAID'`
+    );
+
+    let payrollPaid = helper.emptyOrRows(rows);
+
+    const rows2 = await db.query(
+      `SELECT id
+      FROM payrolls
+      WHERE employer_id = ${user.employer_id} AND year = ${year} AND month = ${month} AND status = 'PENDING'`
+    );
+
+    let payrollPending = helper.emptyOrRows(rows2);
+
+    return {
+      paid: payrollPaid.length > 0 ? true : false,
+      pending: payrollPending.length > 0 ? true : false
+    };
+  } catch (error) {
+    console.log(error);
+    return "Get Runable Error";
+  }
+}
+
 module.exports = {
   getEmployees,
   getAdditions,
@@ -404,4 +442,5 @@ module.exports = {
   run,
   allHistory,
   history,
+  runable
 }

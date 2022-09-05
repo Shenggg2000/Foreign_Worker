@@ -328,6 +328,7 @@ export default (props) => {
                                 <Form.Label>Phone</Form.Label>
                                 <Form.Control type="text" placeholder="0123456789"
                                   value={settingCompanyInfo.contact}
+                                  pattern="^(\+?6?01)[0-46-9]-*[0-9]{7,8}$"
                                   onChange={(e) => {
                                     let settingCompanyInfoTemp = JSON.parse(JSON.stringify(settingCompanyInfo));
                                     settingCompanyInfoTemp.contact = e.target.value;
@@ -400,8 +401,9 @@ export default (props) => {
                             <Col sm={4}>
                               <Form.Group id="zip">
                                 <Form.Label>ZIP</Form.Label>
-                                <Form.Control type="number" placeholder="ZIP"
+                                <Form.Control type="text" placeholder="ZIP"
                                   value={settingCompanyInfo.address_post_code}
+                                  pattern="^[0-9]{5}$"
                                   onChange={(e) => {
                                     let settingCompanyInfoTemp = JSON.parse(JSON.stringify(settingCompanyInfo));
                                     settingCompanyInfoTemp.address_post_code = e.target.value;
@@ -420,6 +422,7 @@ export default (props) => {
                                 <Form.Label>Company Registration No</Form.Label>
                                 <Form.Control type="text" placeholder="Company Registration No"
                                   value={settingCompanyInfo.reg_no}
+                                  pattern="(^[0-9]{12}$|^[0-9]{6}-[A-Z]{1}$)"
                                   onChange={(e) => {
                                     let settingCompanyInfoTemp = JSON.parse(JSON.stringify(settingCompanyInfo));
                                     settingCompanyInfoTemp.reg_no = e.target.value;
@@ -432,6 +435,7 @@ export default (props) => {
                                 <Form.Label>EPF No</Form.Label>
                                 <Form.Control type="text" placeholder="EPF No"
                                   value={settingCompanyInfo.epf_no}
+                                  pattern="^[0-9]{9}$"
                                   onChange={(e) => {
                                     let settingCompanyInfoTemp = JSON.parse(JSON.stringify(settingCompanyInfo));
                                     settingCompanyInfoTemp.epf_no = e.target.value;
@@ -444,6 +448,7 @@ export default (props) => {
                                 <Form.Label>SOCSO No</Form.Label>
                                 <Form.Control type="text" placeholder="SOCSO No"
                                   value={settingCompanyInfo.socso_no}
+                                  pattern="^[A-Z]{1}[0-9]{10}[A-Z]{1}$"
                                   onChange={(e) => {
                                     let settingCompanyInfoTemp = JSON.parse(JSON.stringify(settingCompanyInfo));
                                     settingCompanyInfoTemp.socso_no = e.target.value;

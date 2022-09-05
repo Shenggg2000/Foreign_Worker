@@ -1,6 +1,8 @@
 import React, { useContext, useState, useEffect } from 'react';
+import { Row, Col, Card, Button } from '@themesberg/react-bootstrap';
 import { calculateSocso } from '../utils/SocsoCalculation';
 import { calculateEis } from '../utils/EisCalculation';
+import { useHistory } from "react-router-dom";
 import useToken from '../../useToken';
 
 const PayrollContext = React.createContext();
@@ -15,7 +17,9 @@ export function usePayrollUpdate() {
 }
 
 export function PayrollProvider({ children }) {
+  const history = useHistory();
   const { token } = useToken();
+  const [runable, setRunable] = useState(true);
   const [payroll, setPayroll] = useState({
     employees: [],
     totalGrossSalary: 0,
@@ -26,6 +30,30 @@ export function PayrollProvider({ children }) {
   });
 
   useEffect(() => {
+    getRunable();
+  }, []);
+
+  const getRunable = () => {
+    const requestOptions = {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token,
+      },
+    };
+    fetch('http://localhost:3001/api/payroll/runable', requestOptions)
+      .then(response => response.json())
+      .then(data => {
+        if (!data.error) {
+          setRunable(!data.data.paid);
+          if (!data.data.paid) {
+            getEmployee();
+          }
+        }
+      });
+  }
+
+  const getEmployee = () => {
     let apiReturn = null;
     const requestOptions = {
       method: 'GET',
@@ -43,7 +71,7 @@ export function PayrollProvider({ children }) {
           setPayroll(calculatedPayroll);
         }
       });
-  }, []);
+  }
 
   function updatePayroll(updateInfo) {
     if (updateInfo.action === "check-update") {
@@ -226,7 +254,24 @@ export function PayrollProvider({ children }) {
   return (
     <PayrollContext.Provider value={payroll}>
       <PayrollUpdateContext.Provider value={updatePayroll}>
-        {children}
+        {runable ? children :
+          <Row>
+            <Col xs={12} className="p-3">
+              <Card>
+                <Card.Body>
+                  <div className='w-100'>
+                    <div className='d-flex flex-column justify-content-between align-items-center py-6'>
+                      <h1 className="fs-4 fw-bold mb-3">You can run payroll once a month only.</h1>
+                      <Button onClick={() => {
+                        history.push("/payroll/history");
+                      }} variant="secondary" className="">Go To History</Button>
+                    </div>
+                  </div>
+                </Card.Body>
+              </Card>
+            </Col>
+          </Row>
+        }
       </PayrollUpdateContext.Provider>
     </PayrollContext.Provider>
   )

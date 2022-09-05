@@ -28,9 +28,10 @@ export default () => {
   function processHistoryList(list) {
     let newHistoryList = [];
     for (let n of list) {
+      console.log(n.timestamp);
       let timestampToDate = new Date(n.timestamp * 1000);
       let year = timestampToDate.getFullYear();
-      let month = new Intl.DateTimeFormat('en-US', { month: 'long' }).format(timestampToDate);
+      let month = timestampToDate.toLocaleString('default', { month: 'long' });
       let date = timestampToDate.getDate();
       if (newHistoryList.length == 0) {
         newHistoryList.push({ year, item: [{ ...n, year, month, date }] });
